@@ -49,6 +49,13 @@ Install all the project dependencies:
 ```
 
 
+# Running the unittests
+
+```bash
+  $ coverage run manage.py test wikilegis/ -v 2
+```
+
+
 # Admin interface
 
 If everything went right, the admin interface is now available at: http://127.0.0.1:8000/admin. You can log in using the superuser credentials you just created and manage all kinds of contents. Once you're done managing your site, go visit the main page at http://127.0.0.1:8000/.
