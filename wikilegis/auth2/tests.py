@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
+from model_mommy import mommy
 from wikilegis.auth2.models import User
 from wikilegis.auth2.models import UserManager
 
@@ -15,7 +16,7 @@ class TestLogin(TestCase):
 class TestModels(TestCase):
 
     def setUp(self):
-        self.user = User()
+        self.user = mommy.make(User)
         self.user_manager = UserManager()
 
     def test_get_full_name_when_the_full_name_is_informed(self):
@@ -52,9 +53,8 @@ class TestModels(TestCase):
         self.assertEqual(self.user.get_display_name(), "First Last")
 
     def test_unicode_when_is_informed_the_display_name(self):
-        self.user.email = "test@test.com"
-        self.user.get_display_name()
-        self.assertEqual(self.user.__unicode__(), "test@test.com")
+        self.assertTrue(isinstance(self.user, User))
+        self.assertEqual(self.user.__unicode__(), self.user.email)
 
     def test_get_absolute_url_when_email_is_not_informed(self):
         with self.assertRaises(ValueError) as context:
