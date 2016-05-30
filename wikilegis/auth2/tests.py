@@ -3,7 +3,10 @@ from django.test.client import Client
 from model_mommy import mommy
 from wikilegis.auth2.models import User
 from wikilegis.auth2.models import UserManager
-
+from models import sizeof_fmt
+from models import avatar_validation
+from PIL import Image
+from django.core.exceptions import ValidationError
 
 class TestLogin(TestCase):
 
@@ -60,3 +63,20 @@ class TestModels(TestCase):
         with self.assertRaises(ValueError) as context:
             self.user_manager._create_user("", 12345, False, False)
         self.assertTrue('The given email must be set' in context.exception)
+
+    def test_convert_bytes_to_other_unit(self):
+        self.assertEquals(sizeof_fmt(168963795964), '157.4GiB')
+
+    def test_convert_bytes_to_yottabytes(self):
+        self.assertEquals(sizeof_fmt(1208925819614629174706176), '1.0YiB')
+
+    def test_avatar_validation(self):
+        imageTest = Image.new("RGB", (20, 20))
+        imageTest.size = 20
+        self.assertIsNone(avatar_validation(imageTest))
+
+    def test_avatar_validation_image_bigger_than_10_mb(self):
+        imageTest = Image.new("RGB", (20, 20))
+        imageTest.size = 10 * 1024 * 1024 * 2
+        with self.assertRaises(ValidationError):
+            avatar_validation(imageTest)
